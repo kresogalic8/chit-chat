@@ -36,6 +36,9 @@ io.on('connection', (socket) => {
   // start countdown
   socket.on('countdown', (data) => sockets.startCountdown(socket, data));
 
+  // typing
+  socket.on('typing', (data) => sockets.typing(socket, data));
+
   // disconnect user from socket
   socket.on('disconnect', () => {
     console.log(`User disconnected ${socket.id}`);

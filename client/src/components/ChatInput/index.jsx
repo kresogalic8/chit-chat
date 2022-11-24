@@ -17,6 +17,7 @@ export default function ChatInput({ onCallCommand }) {
   // state
   const [message, setMessage] = React.useState('');
   const [count, setCount] = React.useState(0);
+  const [isTyping, setIsTyping] = React.useState(false);
 
   // refs
   const inputRef = React.useRef();
@@ -34,6 +35,14 @@ export default function ChatInput({ onCallCommand }) {
     [socket],
     (dependencies) => dependencies
   );
+
+  React.useEffect(() => {
+    socket.on('user_typing', (data) => {
+      setIsTyping(data.isTyping);
+    });
+
+    return () => socket.off('user_typing');
+  }, []);
 
   const handleSendMessage = () => {
     if (message === '') alert('Please enter a message');
@@ -65,8 +74,32 @@ export default function ChatInput({ onCallCommand }) {
 
   const handleChange = (e) => setMessage(e.target.value);
 
+  const handleTyping = (e) => {
+    if (e.target.value === '') return;
+
+    // emit typing
+    socket.emit('typing', {
+      username: socket.id,
+      room: 'general',
+      isTyping: true,
+    });
+
+    // add timeout to prevent spamming
+    let typingTimeout;
+    clearTimeout(typingTimeout);
+    typingTimeout = setTimeout(() => {
+      socket.emit('typing', {
+        username: socket.id,
+        room: 'general',
+        isTyping: false,
+      });
+    }, 1000);
+  };
+
   return (
     <div className={styles.chat__input}>
+      {isTyping && <p>The user is typing...</p>}
+
       {count !== 0 && (
         <div className={styles.chat__countdown}>
           <span>You will be redirected in {count} seconds</span>
@@ -80,6 +113,7 @@ export default function ChatInput({ onCallCommand }) {
         value={message}
         onChange={handleChange}
         onKeyPress={handleKeyPress}
+        onKeyDown={handleTyping}
       />
 
       <button type='button' onClick={handleSendMessage}>

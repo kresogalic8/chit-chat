@@ -34,6 +34,10 @@ const updateMessage = (io, data) => {
 };
 
 // typing indicator
+const typing = (socket, data) => {
+  const { room } = data;
+  socket.to(room).emit('user_typing', data);
+};
 
 // stop typing indicator
 
@@ -51,4 +55,5 @@ module.exports = {
   sendMessage,
   startCountdown,
   updateMessage,
+  typing,
 };
