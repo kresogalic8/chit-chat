@@ -27,6 +27,12 @@ const sendMessage = (io, data) => {
   io.sockets.in(room).emit('receive_message', data);
 };
 
+// update message
+const updateMessage = (io, data) => {
+  const { room } = data;
+  io.sockets.in(room).emit('update_message', data);
+};
+
 // typing indicator
 
 // stop typing indicator
@@ -44,4 +50,5 @@ module.exports = {
   joinRoom,
   sendMessage,
   startCountdown,
+  updateMessage,
 };

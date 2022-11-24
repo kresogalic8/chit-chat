@@ -11,7 +11,7 @@ import classnames from 'classnames';
 import { BsChatQuoteFill, BsChatQuote } from 'react-icons/bs';
 
 // helpers
-import { removeLastMessage, startCountdown } from '@/helpers';
+import { startCountdown } from '@/helpers';
 
 // components
 import { ChatMessages, ChatInput } from '@/components';
@@ -23,13 +23,15 @@ export default function Chat() {
   // state
   const [isChatActivated, setIsChatActivated] = React.useState(false);
   const [nickname, setNickname] = React.useState(null);
+  const [messages, setMessages] = React.useState([]);
 
   // commands
   const commands = {
     nick: (value) => changeNickname(value),
-    oops: () => removeLastMessage(),
+    oops: (value) => removeLastMessage(value),
     countdown: (value) => startCountdown(value),
     highlight: (value) => highlightMessage(value),
+    think: (value) => changeTextColor(value),
   };
 
   React.useEffect(() => {
@@ -43,12 +45,87 @@ export default function Chat() {
     }
   }, [isChatActivated, socket]);
 
-  const executeCommand = (command, value) => {
+  // receive messages from server
+  React.useEffect(() => {
+    socket.on('receive_message', (data) => {
+      setMessages((state) => [
+        ...state,
+        {
+          message: data.message,
+          username: data.username,
+          createdAt: data.createdAt,
+        },
+      ]);
+    });
+
+    // Remove event listener on component unmount
+    return () => socket.off('receive_message');
+  }, [socket]);
+
+  React.useEffect(() => {
+    socket.on('update_message', (data) => {
+      console.log(data);
+      // find message in state and update with new_message
+      setMessages((state) => {
+        const index = state.findIndex(
+          (message) => message.message === data.message
+        );
+        const newState = [...state];
+        if (index !== -1) {
+          newState[index].message = data.new_message;
+
+          return newState;
+        }
+        return state;
+      });
+    });
+
+    // Remove event listener on component unmount
+    return () => socket.off('update_message');
+  }, []);
+
+  const executeCommand = async (command, value) => {
     if (!commands[command]) alert('Command not found');
 
     if (commands[command]) {
       commands[command]({ value, socket });
     }
+  };
+
+  const removeLastMessage = () => {
+    setMessages((state) => {
+      const index = state.findIndex(
+        (message) => message.username === socket.id
+      );
+      if (index !== -1) {
+        state.splice(index, 1);
+      }
+      return [...state];
+    });
+  };
+
+  const changeTextColor = ({ value }) => {
+    const message = messages.find((message) => message.message === value);
+    const newMessage = `*${message.message}*`;
+
+    socket.emit('update_message', {
+      username: message.username,
+      room: 'general',
+      message: message.message,
+      new_message: newMessage,
+    });
+  };
+
+  const highlightMessage = ({ value }) => {
+    const message = messages.find((message) => message.message === value);
+    const newMessage = `**${message.message}**`;
+
+    socket.emit('update_message', {
+      username: message.username,
+      room: 'general',
+      message: message.message,
+      new_message: newMessage,
+    });
   };
 
   return (
@@ -74,7 +151,7 @@ export default function Chat() {
           isChatActivated && styles.chat__container_active
         )}
       >
-        <ChatMessages />
+        <ChatMessages messages={messages} />
         <ChatInput onCallCommand={executeCommand} />
       </div>
     </div>

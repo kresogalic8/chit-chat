@@ -30,6 +30,9 @@ io.on('connection', (socket) => {
   // send message
   socket.on('send_message', (data) => sockets.sendMessage(io, data));
 
+  // update message
+  socket.on('update_message', (data) => sockets.updateMessage(io, data));
+
   // start countdown
   socket.on('countdown', (data) => sockets.startCountdown(socket, data));
 

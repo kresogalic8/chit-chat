@@ -25,13 +25,10 @@ export default function ChatInput({ onCallCommand }) {
   useEffectOnce(
     () => {
       socket.on('start_countdown', (data) => {
-        console.log(data);
         const { count, url } = data;
         setCount(count);
-        if (count === 0) {
-          // open url in new tab
-          window.open(url, '_blank');
-        }
+
+        count === 0 && window.open(url, '_blank');
       });
     },
     [socket],

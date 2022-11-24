@@ -1,4 +1,4 @@
-const removeLastMessage = () => {
+const removeLastMessage = (messages) => {
   console.log('removeLastMessage');
 };
 

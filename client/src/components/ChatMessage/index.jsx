@@ -14,9 +14,9 @@ export default function ChatMessage({ message }) {
   // context
   const socket = React.useContext(SocketContext);
 
-  const replaceStarWithStrong = (str) => {
-    return str.replace(/\*/g, '<strong>').replace(/\*/g, '</strong>');
-  };
+  // const replaceStarWithStrong = (str) => {
+  //   return str.replace(/\*/g, '<span>').replace(/\*/g, '</span>');
+  // };
 
   return (
     <div
@@ -28,7 +28,7 @@ export default function ChatMessage({ message }) {
       <div className={styles.chat__message__inner}>
         <div
           dangerouslySetInnerHTML={{
-            __html: replaceStarWithStrong(message.message),
+            __html: message.message,
           }}
         />
         <span>{dayjs(new Date(message?.createdAt)).format('h:mm A')}</span>
