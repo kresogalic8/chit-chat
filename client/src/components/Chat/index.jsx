@@ -10,10 +10,19 @@ import { SocketContext } from '@/context/socket';
 import classnames from 'classnames';
 import { BsChatQuoteFill, BsChatQuote } from 'react-icons/bs';
 
+// helpers
+import { removeLastMessage, startCountdown } from '@/helpers';
+
 // components
 import { ChatMessages, ChatInput } from '@/components';
 
 export default function Chat() {
+  const commands = {
+    // '/nick': changeNickname,
+    oops: () => removeLastMessage(),
+    countdown: (value) => startCountdown(value),
+  };
+
   // context
   const socket = React.useContext(SocketContext);
 
@@ -31,6 +40,13 @@ export default function Chat() {
       setNickname(`User ${socket.id}`);
     }
   }, [isChatActivated, socket]);
+
+  const executeCommand = (command, value) => {
+    console.log(command, value);
+    if (commands[command]) {
+      commands[command](value);
+    }
+  };
 
   return (
     <div className={styles.chat}>
@@ -56,7 +72,7 @@ export default function Chat() {
         )}
       >
         <ChatMessages />
-        <ChatInput />
+        <ChatInput onCallCommand={executeCommand} />
       </div>
     </div>
   );

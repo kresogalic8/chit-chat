@@ -28,7 +28,7 @@ io.on('connection', (socket) => {
   socket.on('join_room', (data) => sockets.joinRoom(socket, data));
 
   // send message
-  socket.on('send_message', (data) => sockets.sendMessage(socket, data));
+  socket.on('send_message', (data) => sockets.sendMessage(io, data));
 
   // disconnect user from socket
   socket.on('disconnect', () => {

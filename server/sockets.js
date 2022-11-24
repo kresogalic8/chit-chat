@@ -22,9 +22,9 @@ const joinRoom = (socket, data) => {
 };
 
 // send message
-const sendMessage = (socket, data) => {
+const sendMessage = (io, data) => {
   const { room } = data;
-  socket.in(room).emit('receive_message', data);
+  io.sockets.in(room).emit('receive_message', data);
 };
 
 // typing indicator

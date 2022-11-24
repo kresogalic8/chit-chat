@@ -9,7 +9,7 @@ import { SocketContext } from '@/context/socket';
 // external libs
 import { BiSend } from 'react-icons/bi';
 
-export default function ChatInput({ onSendMessage, onCallCommand }) {
+export default function ChatInput({ onCallCommand }) {
   // context
   const socket = React.useContext(SocketContext);
 
