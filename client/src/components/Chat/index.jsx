@@ -17,18 +17,20 @@ import { removeLastMessage, startCountdown } from '@/helpers';
 import { ChatMessages, ChatInput } from '@/components';
 
 export default function Chat() {
-  const commands = {
-    // '/nick': changeNickname,
-    oops: () => removeLastMessage(),
-    countdown: (value) => startCountdown(value),
-  };
-
   // context
   const socket = React.useContext(SocketContext);
 
   // state
   const [isChatActivated, setIsChatActivated] = React.useState(false);
   const [nickname, setNickname] = React.useState(null);
+
+  // commands
+  const commands = {
+    nick: (value) => changeNickname(value),
+    oops: () => removeLastMessage(),
+    countdown: (value) => startCountdown(value),
+    highlight: (value) => highlightMessage(value),
+  };
 
   React.useEffect(() => {
     if (isChatActivated) {
@@ -42,9 +44,10 @@ export default function Chat() {
   }, [isChatActivated, socket]);
 
   const executeCommand = (command, value) => {
-    console.log(command, value);
+    if (!commands[command]) alert('Command not found');
+
     if (commands[command]) {
-      commands[command](value);
+      commands[command]({ value, socket });
     }
   };
 

@@ -32,10 +32,15 @@ const sendMessage = (io, data) => {
 // stop typing indicator
 
 // countdown
+const startCountdown = (socket, data) => {
+  const { room } = data;
+  socket.to(room).emit('start_countdown', data);
+};
 
 // leave room
 
 module.exports = {
   joinRoom,
   sendMessage,
+  startCountdown,
 };

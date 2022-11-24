@@ -30,6 +30,9 @@ io.on('connection', (socket) => {
   // send message
   socket.on('send_message', (data) => sockets.sendMessage(io, data));
 
+  // start countdown
+  socket.on('countdown', (data) => sockets.startCountdown(socket, data));
+
   // disconnect user from socket
   socket.on('disconnect', () => {
     console.log(`User disconnected ${socket.id}`);

@@ -19,6 +19,19 @@ export default function ChatInput({ onCallCommand }) {
   // refs
   const inputRef = React.useRef();
 
+  // listen for countdown command
+  React.useEffect(() => {
+    socket.on('start_countdown', (data) => {
+      console.log(data);
+      const { count, url } = data;
+      setCount(count);
+      if (count === 0) {
+        // open url in new tab
+        window.open(url, '_blank');
+      }
+    });
+  }, [socket]);
+
   const handleSendMessage = () => {
     if (message === '') alert('Please enter a message');
 
