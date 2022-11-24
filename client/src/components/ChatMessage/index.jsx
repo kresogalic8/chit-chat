@@ -24,6 +24,12 @@ export default function ChatMessage({ message }) {
     // replace string inside ~ with <del> tag
     str = str?.replace(/\~(.*?)\~/g, '<span style="font-size: 18px">$1</span>');
 
+    // replace (smile) with smile emoji
+    str = str?.replace(/\(smile\)/g, '😊');
+
+    // replace (wink) with wink emoji
+    str = str?.replace(/\(wink\)/g, '😉');
+
     return str;
   };
 

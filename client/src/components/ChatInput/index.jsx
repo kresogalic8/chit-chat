@@ -67,6 +67,12 @@ export default function ChatInput({ onCallCommand }) {
 
   return (
     <div className={styles.chat__input}>
+      {count !== 0 && (
+        <div className={styles.chat__countdown}>
+          <span>You will be redirected in {count} seconds</span>
+        </div>
+      )}
+
       <input
         ref={inputRef}
         type='text'
@@ -77,7 +83,7 @@ export default function ChatInput({ onCallCommand }) {
       />
 
       <button type='button' onClick={handleSendMessage}>
-        {count ? count : <BiSend size={20} color='purple' />}
+        <BiSend size={20} color='purple' />
       </button>
     </div>
   );
