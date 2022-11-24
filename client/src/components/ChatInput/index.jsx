@@ -8,6 +8,7 @@ import { SocketContext } from '@/context/socket';
 
 // external libs
 import { BiSend } from 'react-icons/bi';
+import useEffectOnce from '@/hooks/useEffectOnce';
 
 export default function ChatInput({ onCallCommand }) {
   // context
@@ -15,22 +16,27 @@ export default function ChatInput({ onCallCommand }) {
 
   // state
   const [message, setMessage] = React.useState('');
+  const [count, setCount] = React.useState(0);
 
   // refs
   const inputRef = React.useRef();
 
   // listen for countdown command
-  React.useEffect(() => {
-    socket.on('start_countdown', (data) => {
-      console.log(data);
-      const { count, url } = data;
-      setCount(count);
-      if (count === 0) {
-        // open url in new tab
-        window.open(url, '_blank');
-      }
-    });
-  }, [socket]);
+  useEffectOnce(
+    () => {
+      socket.on('start_countdown', (data) => {
+        console.log(data);
+        const { count, url } = data;
+        setCount(count);
+        if (count === 0) {
+          // open url in new tab
+          window.open(url, '_blank');
+        }
+      });
+    },
+    [socket],
+    (dependencies) => dependencies
+  );
 
   const handleSendMessage = () => {
     if (message === '') alert('Please enter a message');
@@ -74,7 +80,7 @@ export default function ChatInput({ onCallCommand }) {
       />
 
       <button type='button' onClick={handleSendMessage}>
-        <BiSend size={20} color='purple' />
+        {count ? count : <BiSend size={20} color='purple' />}
       </button>
     </div>
   );

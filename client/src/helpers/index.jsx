@@ -18,7 +18,7 @@ const startCountdown = ({ value, socket }) => {
         clearInterval(intervalId);
         intervalId = null;
       } else {
-        socket.volatile.emit('start_countdown', {
+        socket.volatile.emit('countdown', {
           room: 'general',
           count,
           url,

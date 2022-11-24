@@ -33,6 +33,7 @@ const sendMessage = (io, data) => {
 
 // countdown
 const startCountdown = (socket, data) => {
+  console.log(data);
   const { room } = data;
   socket.to(room).emit('start_countdown', data);
 };
