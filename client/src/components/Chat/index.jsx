@@ -11,7 +11,7 @@ import classnames from 'classnames';
 import { BsChatQuoteFill, BsChatQuote } from 'react-icons/bs';
 
 // components
-import { ChatMessages } from '@/components';
+import { ChatMessages, ChatInput } from '@/components';
 
 export default function Chat() {
   // context
@@ -56,6 +56,7 @@ export default function Chat() {
         )}
       >
         <ChatMessages />
+        <ChatInput />
       </div>
     </div>
   );

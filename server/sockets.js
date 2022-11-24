@@ -24,7 +24,7 @@ const joinRoom = (socket, data) => {
 // send message
 const sendMessage = (socket, data) => {
   const { room } = data;
-  socket.io.sockets.in(room).emit('receive_message', data);
+  socket.in(room).emit('receive_message', data);
 };
 
 // typing indicator
