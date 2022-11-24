@@ -32,6 +32,7 @@ export default function Chat() {
     countdown: (value) => startCountdown(value),
     highlight: (value) => highlightMessage(value),
     think: (value) => changeTextColor(value),
+    fadelast: (value) => fadeLastMessage(value),
   };
 
   React.useEffect(() => {
@@ -70,9 +71,11 @@ export default function Chat() {
         const index = state.findIndex(
           (message) => message.message === data.message
         );
+        console.log(index);
         const newState = [...state];
         if (index !== -1) {
           newState[index].message = data.new_message;
+          newState[index].fade = data?.fade || false;
 
           return newState;
         }
@@ -104,6 +107,21 @@ export default function Chat() {
     });
   };
 
+  const fadeLastMessage = () => {
+    // find last message from username
+    const lastMessage = messages
+      .filter((message) => message.username === socket.id)
+      .pop();
+
+    socket.emit('update_message', {
+      username: lastMessage.username,
+      room: 'general',
+      message: lastMessage.message,
+      new_message: lastMessage.message,
+      fade: true,
+    });
+  };
+
   const changeTextColor = ({ value }) => {
     const message = messages.find((message) => message.message === value);
     const newMessage = `*${message.message}*`;
@@ -118,7 +136,7 @@ export default function Chat() {
 
   const highlightMessage = ({ value }) => {
     const message = messages.find((message) => message.message === value);
-    const newMessage = `**${message.message}**`;
+    const newMessage = `~${message.message}~`;
 
     socket.emit('update_message', {
       username: message.username,

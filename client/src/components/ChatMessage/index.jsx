@@ -14,21 +14,31 @@ export default function ChatMessage({ message }) {
   // context
   const socket = React.useContext(SocketContext);
 
-  // const replaceStarWithStrong = (str) => {
-  //   return str.replace(/\*/g, '<span>').replace(/\*/g, '</span>');
-  // };
+  const replaceChars = (str) => {
+    // replace string inside * with <strong> tag
+    str = str?.replace(
+      /\*(.*?)\*/g,
+      '<span style="color: darkgrey;">$1</span>'
+    );
+
+    // replace string inside ~ with <del> tag
+    str = str?.replace(/\~(.*?)\~/g, '<span style="font-size: 18px">$1</span>');
+
+    return str;
+  };
 
   return (
     <div
       className={classnames(
         styles.chat__message,
-        message.username === socket.id && styles.sender
+        message.username === socket.id && styles.sender,
+        message?.fade && styles.fade
       )}
     >
       <div className={styles.chat__message__inner}>
         <div
           dangerouslySetInnerHTML={{
-            __html: message.message,
+            __html: replaceChars(message.message),
           }}
         />
         <span>{dayjs(new Date(message?.createdAt)).format('h:mm A')}</span>
