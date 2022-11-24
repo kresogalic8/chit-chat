@@ -10,13 +10,16 @@ import { SocketContext } from '@/context/socket';
 import classnames from 'classnames';
 import { BsChatQuoteFill, BsChatQuote } from 'react-icons/bs';
 
+// components
+import { ChatMessages } from '@/components';
+
 export default function Chat() {
   // context
   const socket = React.useContext(SocketContext);
 
   // state
   const [isChatActivated, setIsChatActivated] = React.useState(false);
-  const [nickname, setNickname] = React.useState('');
+  const [nickname, setNickname] = React.useState(null);
 
   React.useEffect(() => {
     if (isChatActivated) {
@@ -27,7 +30,7 @@ export default function Chat() {
 
       setNickname(`User ${socket.id}`);
     }
-  }, []);
+  }, [isChatActivated, socket]);
 
   return (
     <div className={styles.chat}>
@@ -52,7 +55,7 @@ export default function Chat() {
           isChatActivated && styles.chat__container_active
         )}
       >
-        {nickname && <h1>{nickname}</h1>}
+        <ChatMessages />
       </div>
     </div>
   );

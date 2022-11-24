@@ -4,6 +4,8 @@ const http = require('http');
 const cors = require('cors');
 const { Server } = require('socket.io');
 
+const sockets = require('./sockets.js');
+
 // cors middleware
 app.use(cors());
 
@@ -21,6 +23,12 @@ const io = new Server(server, {
 // io server listens for a connection
 io.on('connection', (socket) => {
   console.log(`User connected ${socket.id}`);
+
+  // join room
+  socket.on('join_room', (data) => sockets.joinRoom(socket, data));
+
+  // send message
+  socket.on('send_message', (data) => sockets.sendMessage(socket, data));
 
   // disconnect user from socket
   socket.on('disconnect', () => {
